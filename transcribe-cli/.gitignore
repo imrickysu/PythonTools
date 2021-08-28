@@ -1,1 +1,5 @@
-myenv.sh
+*env.sh
+*.srt
+*.vtt
+*.json
+*.txt
