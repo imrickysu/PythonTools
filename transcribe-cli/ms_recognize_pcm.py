@@ -43,6 +43,14 @@ import time
 import json
 
 
+### USER CONFIG START ###
+# language_support values should be BCP47 format
+# https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/language-support#speech-to-text
+language_support = ["en-US", "zh-CN"]
+
+
+### USER CONFIG END ###
+
 recognizers = []
 
 def shutdown_recognizers():
@@ -70,7 +78,9 @@ def recognize_pcm_audio_file_to_ms_json(input_pcm_file):
     
     audio_config = speechsdk.audio.AudioConfig(filename=input_pcm_file)
 
-    recognizer = speechsdk.SpeechRecognizer(speech_config=speech_config, audio_config=audio_config)
+    auto_detect_source_language_config = speechsdk.languageconfig.AutoDetectSourceLanguageConfig(languages=language_support)
+
+    recognizer = speechsdk.SpeechRecognizer(speech_config=speech_config, auto_detect_source_language_config=auto_detect_source_language_config, audio_config=audio_config)
 
     # For an empty file throws RuntimeError: Exception with an error code: 0x9 (SPXERR_UNEXPECTED_EOF)
     # For a missing file RuntimeError: Exception with an error code: 0x8 (SPXERR_FILE_OPEN_FAILED)

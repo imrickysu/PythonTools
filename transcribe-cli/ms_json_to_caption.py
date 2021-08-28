@@ -75,7 +75,7 @@ def mask_profanity(word):
     return '*' * (len(word))
 
 class BaseCaptionWriter:
-    language_tag='en'
+    language_tag='en' # Only used in VTT for now
     
     def __init__(self):
         self.reset()
@@ -86,7 +86,11 @@ class BaseCaptionWriter:
 
     def segment_to_timed_words(self, json_segment):
         """Returns an array of word entries [ {"Duration":4900000, "Offset":8700000,"Word":"OK"}... """
-        return json_segment["NBest"][0]['Words']
+        # Sometimes the json file returned by Azure doesn't have "NBest" or "Words" key. Return empty list in this case.
+        if "NBest" in json_segment:
+            if 'Words' in json_segment["NBest"][0]:
+                return json_segment["NBest"][0]['Words']
+        return [] 
     
     def process_ms_json(self,json_results):
         """Returns a string - the json results converted into a webvtt or srt caption resource.
@@ -280,7 +284,7 @@ def main():
     
     json_results = json.loads(json_text)
      
-    language_tag = 'en'
+    language_tag = 'en' # It seems nobody uses this variable
     
     for caption_file in sys.argv[2:]:
         caption_type = os.path.splitext(caption_file)[1][1:]     
